@@ -1,4 +1,6 @@
-﻿# mlops-CD-for-ML
+[![Build and package RoBERTa-sequencing to Dockerhub](https://github.com/sontt22791/mlops-CD-for-ML/actions/workflows/main.yml/badge.svg)](https://github.com/sontt22791/mlops-CD-for-ML/actions/workflows/main.yml)
+
+# mlops-CD-for-ML
 
 ## CD for ML
 phần này về ý tưởng thì giống vs repos serving model using docker (https://github.com/sontt22791/mlops-serving-model-using-docker)
