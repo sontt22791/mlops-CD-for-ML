@@ -30,9 +30,30 @@ docker run -it -p 5000:5000 --rm alfredodeza/roberta
 ```
 
 ### Infrastructure as Code for Continuous Delivery of ML Models
-phần này do chưa có acc azure nên mình chưa practice đc. flow của bước này là thay vì upload model lên github (size lớn), model nên được storage ở chỗ khác, và sẽ đc download về khi github actions run (trong sách tác giả lưu ở Registering model của azure ml => vì vậy sẽ cần authentication trước khi down về)
+phần này do chưa có acc azure nên mình chưa practice đc.
+
+Flow của bước này là thay vì upload model lên github (size lớn), model nên được storage ở chỗ khác, và sẽ đc download về khi github actions run (trong sách tác giả lưu ở Registering model của azure ml => vì vậy sẽ cần authentication trước khi down về)
 
 sau khi build xong, images sẽ được push lên Docker Hub hoặc GitHub Container Registry
+
+mình đã thay đổi phần download model, thay vì lưu model trong azure ml thì mình đã download trực tiếp bằng
+wget url_model, cụ thể:
+```
+1. mình nhận thấy lệnh run trong workflow cũng dùng như cli bình thường, vì vậy mình đã dùng wget để download model
+2. do step đầu tiên của flow là clone repos về, vì vậy khi download model ở bước 1 thì model đc đc lưu ở ./
+=> vì vậy cần move sang folder webapp (hoặc sửa Dockerfile để copy)
+3. mình sử dụng Github package thay vì Docker Hub => vì vậy cần fai setup cho Github package theo các bước:
+- tạo Personal access tokens (PAT): vào setting => vào develop setting => Personal access tokens => Generate new token => copy token (token này chỉ hiện 1 lần duy nhất khi tạo)
+- vào repos => chọn setting => chọn secrets => khai báo variable GH_REGISTRY (https://github.com/sontt22791/mlops-CD-for-ML/settings/secrets/actions)
+4. setup để login vào github package + build dockerfile => push
+note: tag của images fai match vs tên acc và repos
+
+Sau khi run xong, vào github package và có thể pull images về docker
+https://github.com/sontt22791/mlops-CD-for-ML/pkgs/container/flask-roberta
+
+để pull images về local từ github package, cần fai login github package ở local trước (https://github.community/t/push-or-pull-on-ghcr-package-results-in-error-when-authenticating-with-an-oauth-app/131660)
+docker login ghcr.io -u sontt22791
+```
 
 ## ONNX là gì?
 https://viblo.asia/p/pytorch-tutorial-deploy-mo-hinh-pytorch-len-web-browser-su-dung-onnxjs-YWOZroLRlQ0
